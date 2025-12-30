@@ -9,7 +9,7 @@ Implement RESTful routes for a `Post` model using Laravel 12. Posts support **dr
 1. Clone this repository and set up the local environment.
 2. Change the remote repository to your own public repository (do **not** delete commit history)
 3. Implement the required features described below.
-4. Push all changes to your public repository.
+4. Push all changes to your public repository and let us know the repository URL.
 
 ## 3. Specifications
 
