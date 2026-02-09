@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class PostController extends Controller
         $posts = Post::with('author')->active()
             ->paginate(20);
 
-        return response()->json($posts);
+        return PostResource::collection($posts);
     }
 
     /**
@@ -35,7 +36,9 @@ class PostController extends Controller
     {
         $post = Post::create($request->validated());
 
-        return response()->json($post, 201);
+        return (new PostResource($post))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -47,7 +50,7 @@ class PostController extends Controller
             return response()->json('Post not found.', 404);
         }
 
-        return response()->json($post);
+        return new PostResource($post);
     }
 
     /**
@@ -67,11 +70,9 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $response = $post->update($request->validated());
+        $post->update($request->validated());
 
-        return $response
-            ? response()->json($post)
-            : response()->json('Failed to update post.', 500);
+        return new PostResource($post->refresh());
     }
 
     /**
@@ -85,6 +86,6 @@ class PostController extends Controller
 
         $post->delete();
 
-        return response()->json('Post deleted successfully.');
+        return response()->noContent();
     }
 }
